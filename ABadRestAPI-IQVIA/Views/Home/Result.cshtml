@@ -1,0 +1,57 @@
+﻿@model ABadRestAPI_IQVIA.Models.TweetViewModel
+@{
+    ViewBag.Title = "Tweets Results";
+}
+
+
+
+<div class="row">
+    <div class="col-md-4">
+        <p>
+            <br />
+            <b>Total Number Tweet records -</b> @Model.TweetList.Count
+            <br />
+            <b>Number of dupicate records -</b> @Model.DuplicateCount
+        </p>
+        <p><b><a class="btn btn-default" href="#" id="btnDownloadExcel">Click to download Tweet list as excel</a></b></p>
+        @* //Was trying to display in a Jquery grid, but excel can give a way to play around with data
+            <table  id="table_id" style="display:none">
+            <tr>
+                <th>Id</th>
+                <th>Text</th>
+                <th>Timestamp</th>
+            </tr>
+            @foreach(var item in Model.TweetList)
+            {
+                <tr>
+                    <td>@item.id</td>
+                    <td>@item.text</td>
+                    <td>@item.stamp.ToString("yyyy-dd-MM hh:mm:ss")</td>
+                </tr>
+            }
+        </table>*@
+    </div>
+   <script type="text/javascript">
+       $(document).ready(function () {
+           $('#table_id').DataTable();
+       });
+
+       $("#btnDownloadExcel").click(function () {
+           $.ajax({
+               type: 'POST',
+               url: '/Home/ExportExcel',
+               success: function (returnValue) {
+                   if (returnValue == 'nofile') {
+                   }
+                   else {
+                       openInNewTab('/Home/Download?file=' + returnValue);
+                   }
+               }
+           });
+       });
+       function openInNewTab(url) {
+           var win = window.open(url, '_blank');
+           win.focus();
+       }
+   </script>
+</div>
